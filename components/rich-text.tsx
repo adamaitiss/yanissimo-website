@@ -7,7 +7,7 @@ type RichTextProps<T extends ElementType> = {
   as?: T;
   text: string;
   className?: string;
-  replacements: PlaceholderMap;
+  replacements?: PlaceholderMap;
 } & Omit<ComponentPropsWithoutRef<T>, "as" | "className" | "children">;
 
 export const RichText = <T extends ElementType = "p">({
@@ -18,7 +18,7 @@ export const RichText = <T extends ElementType = "p">({
   ...rest
 }: RichTextProps<T>) => {
   const Component = (as ?? "p") as ElementType;
-  const html = formatRichTextToHtml(text, replacements);
+  const html = formatRichTextToHtml(text, replacements ?? {});
 
   return (
     <Component

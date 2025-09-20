@@ -1,16 +1,15 @@
-import { CTASection } from "@/components/cta-section";
-import { FAQ } from "@/components/faq";
+import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
-import { MobileCTABar } from "@/components/mobile-cta-bar";
-import { Pricing } from "@/components/pricing";
-import { Program } from "@/components/program";
-import { Rooms } from "@/components/rooms";
-import { SiteFooter } from "@/components/site-footer";
-import { StickyNav } from "@/components/navigation/sticky-nav";
+import { TextSection } from "@/components/text-section";
+import { PricingSection } from "@/components/pricing-section";
+import { BookingSteps } from "@/components/booking-steps";
+import { FAQ } from "@/components/faq";
 import { Teacher } from "@/components/teacher";
-import { Venue } from "@/components/venue";
-import { getCopy } from "@/lib/copy";
-import { getSiteConfig, getPlaceholderMap } from "@/lib/config";
+import { Contacts } from "@/components/contacts";
+import { Footer } from "@/components/footer";
+import { MobileCTABar } from "@/components/mobile-cta-bar";
+import { getPageContent } from "@/lib/content";
+import { formatDate } from "@/lib/dates";
 import { extractPlainText } from "@/lib/text";
 
 const parsePrice = (value: string) => {
@@ -19,85 +18,107 @@ const parsePrice = (value: string) => {
 };
 
 export default function HomePage() {
-  const config = getSiteConfig();
-  const copy = getCopy("ru");
-  const replacements = getPlaceholderMap(config);
-  const primaryTopCta = extractPlainText(copy.hero.cta_primary, replacements);
-  const secondaryTopCta = extractPlainText(copy.hero.cta_secondary, replacements);
+  const {
+    site,
+    intro,
+    overview,
+    hotel,
+    program,
+    pricing,
+    booking,
+    faq,
+    teacher,
+  } = getPageContent();
 
-  const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://yanissimoyoga.ru").replace(/\/$/, "");
+  const replacements = {
+    DEPOSIT: site.booking.deposit,
+    BOOKING_DEADLINE: formatDate(site.booking.bookingDeadline),
+    BALANCE_DUE: formatDate(site.booking.balanceDue),
+  } as const;
+
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
-    name: "Yanissimo Yoga Retreat · The Barefoot Eco Hotel",
-    description:
-      "7-дневный йога-ретрит Yanissimo Yoga в The Barefoot Eco Hotel на острове Ханимаадху (Мальдивы).",
+    name: site.event.name,
+    description: site.event.description,
     image: [
-      `${siteUrl}/images/og-maldives-retreat.jpg`,
-      `${siteUrl}/images/hero-aerial.webp`,
+      `${site.meta.siteUrl.replace(/\/$/, "")}${site.meta.ogImage}`,
+      `${site.meta.siteUrl.replace(/\/$/, "")}/images/hero-aerial.webp`,
     ],
-    startDate: config.start_date,
-    endDate: config.end_date,
+    startDate: site.event.startDate,
+    endDate: site.event.endDate,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     eventStatus: "https://schema.org/EventScheduled",
     location: {
       "@type": "Place",
-      name: "The Barefoot Eco Hotel",
+      name: site.event.location.hotel,
       address: {
         "@type": "PostalAddress",
-        streetAddress: "Naseemee Magu",
-        addressLocality: "Hanimaadhoo",
-        addressRegion: "Haa Dhaalu Atoll",
-        addressCountry: "MV",
+        addressLocality: site.event.location.island,
+        addressRegion: site.event.location.atoll,
+        addressCountry: site.event.location.countryCode,
       },
     },
     organizer: {
       "@type": "Organization",
-      name: "Yanissimo Yoga",
-      url: siteUrl,
+      name: site.siteName,
+      url: site.meta.siteUrl,
     },
-    offers: [
-      {
-        "@type": "Offer",
-        price: parsePrice(config.price_double),
-        priceCurrency: "EUR",
-        availability: "https://schema.org/LimitedAvailability",
-        url: config.form_url,
+    offers: [site.pricing.double, site.pricing.single].map((tier) => ({
+      "@type": "Offer",
+      price: parsePrice(tier.earlyBird.price) ?? parsePrice(tier.regular.price),
+      priceCurrency: "USD",
+      availability: "https://schema.org/LimitedAvailability",
+      url: site.booking.formUrl,
+    })),
+  } as const;
+
+  const faqJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: faq.items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: extractPlainText(item.answer, replacements),
       },
-      {
-        "@type": "Offer",
-        price: parsePrice(config.price_single),
-        priceCurrency: "EUR",
-        availability: "https://schema.org/LimitedAvailability",
-        url: config.form_url,
-      },
-    ],
+    })),
   };
 
   return (
-    <div className="relative bg-background text-secondary-foreground">
-      <StickyNav
-        primaryHref={config.form_url}
-        primaryLabel={primaryTopCta}
-        secondaryHref={config.contact_tg}
-        secondaryLabel={secondaryTopCta}
+    <div className="bg-background text-foreground">
+      <Header
+        brand={site.siteName}
+        navItems={site.navigation}
+        bookHref={site.booking.formUrl}
+        bookLabel={site.hero.secondaryCta.label}
       />
-      <main id="main" className="flex flex-col gap-0 pb-28 md:pb-0">
-        <Hero content={copy.hero} replacements={replacements} config={config} />
-        <Venue content={copy.venue} replacements={replacements} />
-        <Program content={copy.program} replacements={replacements} />
-        <Rooms content={copy.rooms} replacements={replacements} />
-        <Pricing content={copy.pricing} replacements={replacements} />
-        <FAQ content={copy.faq} replacements={replacements} />
-        <Teacher content={copy.teacher} replacements={replacements} />
-        <CTASection content={copy.cta} replacements={replacements} config={config} />
+      <main id="main" className="flex flex-col">
+        <Hero
+          title={site.hero.title}
+          location={site.hero.location}
+          datesLine={site.hero.datesLine}
+          primaryCta={site.hero.primaryCta}
+          secondaryCta={site.hero.secondaryCta}
+        />
+        <TextSection id={intro.id} eyebrow={intro.eyebrow} paragraphs={intro.paragraphs} />
+        <TextSection id={overview.id} title={overview.title} paragraphs={overview.paragraphs} />
+        <TextSection id={hotel.id} title={hotel.title} paragraphs={hotel.paragraphs} background="muted" />
+        <TextSection id={program.id} title={program.title} paragraphs={program.paragraphs} />
+        <PricingSection section={pricing} pricing={site.pricing} />
+        <BookingSteps section={booking} replacements={replacements} />
+        <FAQ section={faq} replacements={replacements} />
+        <Teacher section={teacher} />
+        <Contacts contact={site.contact} />
       </main>
-      <SiteFooter content={copy.footer} replacements={replacements} config={config} />
-      <MobileCTABar heroContent={copy.hero} replacements={replacements} config={config} />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }}
+      <Footer />
+      <MobileCTABar
+        primary={{ label: site.hero.secondaryCta.label, href: site.booking.formUrl, external: true }}
+        secondary={{ label: "Telegram", href: site.contact.telegram, external: true }}
       />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
     </div>
   );
 }

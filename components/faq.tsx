@@ -1,39 +1,49 @@
+"use client";
+
+import { trackEvent } from "@/lib/analytics";
 import { SECTION_IDS } from "@/lib/constants";
-import type { SiteCopy } from "@/lib/copy";
+import type { FAQSection } from "@/lib/content";
 import type { PlaceholderMap } from "@/lib/text";
-import { AnimatedSection } from "@/components/animated-section";
 import { RichText } from "@/components/rich-text";
 
 export type FAQProps = {
-  content: SiteCopy["faq"];
+  section: FAQSection;
   replacements: PlaceholderMap;
 };
 
-export const FAQ = ({ content, replacements }: FAQProps) => {
+export const FAQ = ({ section, replacements }: FAQProps) => {
   return (
     <section
       id={SECTION_IDS.faq}
-      className="mx-auto max-w-4xl scroll-mt-24 px-6 py-16 sm:px-10"
+      aria-labelledby="faq-heading"
+      className="bg-muted py-20"
     >
-      <AnimatedSection>
-        <h2 className="font-display text-3xl font-semibold text-primary sm:text-4xl">FAQ</h2>
-        <div className="mt-8 space-y-4">
-          {content.map((item, index) => (
+      <div className="mx-auto max-w-3xl px-6 md:px-10">
+        <h2 id="faq-heading" className="text-3xl font-semibold text-foreground md:text-4xl">
+          FAQ
+        </h2>
+        <div className="mt-10 space-y-4">
+          {section.items.map((item, index) => (
             <details
               key={index}
-              className="group rounded-2xl border border-border/40 bg-white p-5 text-secondary-foreground shadow-sm transition-shadow hover:shadow-md"
+              className="group rounded-xl border border-border bg-white px-5 py-4 text-foreground shadow-sm transition-shadow hover:shadow-md"
+              onToggle={(event) => {
+                if (event.currentTarget.open) {
+                  trackEvent("faq_item_open", { question: item.question });
+                }
+              }}
             >
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-semibold sm:text-lg">
-                <RichText text={item.question} replacements={replacements} />
-                <span className="text-primary transition-transform group-open:rotate-45">+</span>
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-left text-base font-medium md:text-lg">
+                <span>{item.question}</span>
+                <span className="text-accent transition-transform group-open:rotate-45">+</span>
               </summary>
-              <div className="mt-3 text-secondary-foreground/90">
+              <div className="mt-3 text-sm leading-relaxed text-muted-foreground md:text-base">
                 <RichText text={item.answer} replacements={replacements} />
               </div>
             </details>
           ))}
         </div>
-      </AnimatedSection>
+      </div>
     </section>
   );
 };

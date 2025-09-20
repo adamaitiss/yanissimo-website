@@ -1,72 +1,101 @@
-# Yanissimo Yoga · Maldives Retreat Landing
+# Yanissimo Yoga — “YOGA + OCEAN” Landing Page
 
-Single-page Next.js (App Router) site for the Yanissimo Yoga retreat at The Barefoot Eco Hotel. Content is driven by JSON and exports to a static bundle for Netlify, Vercel, or Cloudflare Pages.
+Single-page Next.js 15 (App Router) build that mirrors yanissimoyoga.ru while moving copy and pricing into structured content. The site exports statically for Netlify/Vercel/Cloudflare Pages and keeps the hero visually identical to the original release.
 
-## 1. Installation & Local Development
+## Quickstart
 
 ```bash
 npm install
 npm run dev
+# open http://localhost:3000
 ```
 
-Open `http://localhost:3000` to preview. Edit copy under `/content` or components under `/components`; HMR refreshes instantly.
+| Script | Purpose |
+| --- | --- |
+| `npm run dev` | Next.js dev server with fast refresh |
+| `npm run build` | Production build + static export to `out/` |
+| `npm run lint` | ESLint (type-aware) |
+| `npm run test` | Vitest unit tests for content and components |
+| `npm run test:e2e` | Playwright visual regression of the hero block |
 
-## 2. Available Scripts
+## Content Model
 
-- `npm run dev` – Next dev server with Tailwind watch.
-- `npm run build` – Production build + static export to `/out`.
-- `npm run export` – Shortcut to rebuild + refresh `/out` (same as `npm run build`).
-- `npm run lint` – ESLint type-aware rules.
+- `content/site.json` — single source of truth for hero title, dates, navigation labels, Google Form URL, pricing tiers (early-bird/regular) and contact profiles.
+- `content/sections/*.md` — markdown + frontmatter for each section:
+  - `intro.md`, `overview.md`, `hotel.md`, `program.md`, `pricing.md`, `booking.md`, `faq.md`, `teacher.md`
+  - placeholders such as `{{BOOKING_DEADLINE}}`, `{{DEPOSIT}}`, `{{BALANCE_DUE}}` resolve from `site.json` on render.
 
-## 3. Content & Configuration
+Updating copy is done by editing these markdown files. No component code is required for day-to-day changes.
 
-- `/content/copy.ru.json` – Russian copy for all sections. Duplicate as `copy.en.json` when English is ready.
-- `/content/config.json` – Retreat dates, prices, deposit policy and default links.
-- `/content/sources.json` – Source list for inline citations.
+## Environment Variables
 
-Tokens like `{{DATES}}` or `{{PRICE_DOUBLE}}` are replaced at runtime from `config.json`. Citations `[thebarefoot.com][2]` are resolved against `sources.json` and surfaced in the footer.
+| Variable | Description |
+| --- | --- |
+| `NEXT_PUBLIC_FORM_URL` | Overrides booking form link (falls back to `site.json`) |
+| `NEXT_PUBLIC_CONTACT_TG` / `NEXT_PUBLIC_WHATSAPP` | Optional overrides for social buttons |
+| `NEXT_PUBLIC_SITE_URL` | Used for metadata/structured data canonical (defaults to `https://yanissimoyoga.ru`) |
+| `NEXT_PUBLIC_GA_ID` | Google Analytics (gtag) id |
+| `NEXT_PUBLIC_PLAUSIBLE_DOMAIN` | Plausible domain if you prefer lightweight analytics |
 
-### Runtime environment variables
+## Assets & Styling
 
-Override links without touching JSON:
+- Hero assets live in `public/images/hero-aerial.avif|webp|original.jpg` to keep the same crop as the original site.
+- Teacher portrait (`teacher-yana.webp`) is reused from the legacy build.
+- Neutral palette is implemented via CSS variables in `app/globals.css` to match the `#4f4c4c` / `#e0e0e0` tones.
 
-- `NEXT_PUBLIC_FORM_URL`
-- `NEXT_PUBLIC_CONTACT_TG`
-- `NEXT_PUBLIC_WHATSAPP`
-- Optional analytics: `NEXT_PUBLIC_GA_ID`, `NEXT_PUBLIC_PLAUSIBLE_DOMAIN`
-- Optional canonical base: `NEXT_PUBLIC_SITE_URL` (defaults to `https://yanissimoyoga.ru`).
+## Analytics Hooks
 
-## 4. Assets
+Client-side events are emitted for:
+- Book CTA clicks (hero, header, mobile sticky bar).
+- Pricing section visibility (via IntersectionObserver).
+- FAQ accordion opens.
 
-All retreat photography lives in `public/images` as local WebP assets. Replace `teacher-yana.webp` with an approved portrait as soon as it is available (same filename/ratio to avoid edits).
+Events are forwarded to `window.gtag` and/or `window.plausible` when available.
 
-## 5. Deployment (static, 5 steps)
+## Testing
+
+### Unit tests
+
+```
+npm run test
+```
+
+Checks hero/pricing rendering and validates the content JSON against expected values. Warning logs about the mocked `<Image />` component are harmless in this context.
+
+### Visual regression
+
+```
+npm run test:e2e
+```
+
+This spins up `npm run dev`, loads `/`, and captures `section#hero`. Baseline lives at `tests/visual/hero.spec.ts-snapshots/hero-chromium-darwin.png`. Update with `npx playwright test --update-snapshots` after intentional hero tweaks.
+
+## Deployment
 
 1. `npm install`
-2. Define env vars in your platform dashboard (form, Telegram, WhatsApp, analytics, site URL).
+2. Set environment variables in your hosting provider.
 3. `npm run build`
-4. `npm run export` (optional alias that refreshes `/out` if you prefer the legacy command)
-5. Deploy `/out` to Netlify/Vercel/Cloudflare Pages (drag & drop or connect repo).
+4. Deploy the generated `out/` directory.
 
-The build artefact is fully static: no server or API routes required.
+The export is fully static—no server runtime required.
 
-## 6. Accessibility & UX Notes
+## Accessibility & UX
 
-- Skip link, high-contrast palette, semantic headings, and `scroll-mt` offsets for sticky nav anchors.
-- Mobile bottom CTA bar (`md:hidden`) mirrors the hero buttons.
-- Sources are listed in the footer; inline references stay clickable.
+- Semantic headings and skip link (`<a href="#main">`).
+- Sticky header with smooth anchor scrolling (`SCROLL_OFFSET_PX` maintains spacing).
+- Mobile bottom booking bar appears after the first scroll.
+- FAQ uses `<details>` elements with keyboard support.
 
-## 7. Performance Checklist
+## Folder Map (high-level)
 
-- Local WebP images sized for responsive layouts (`next/image` with `unoptimized` export mode).
-- Fonts served via `next/font` (Inter + Playfair Display, Cyrillic subsets).
-- Progressive section reveals use dynamically-imported Framer Motion to keep interaction lightweight.
-- `next.config.ts` is pre-set for `output: 'export'` and package import optimisation.
+```
+app/                    → Next.js app router entry (layout + page)
+components/             → Stateless building blocks (header, hero, pricing, etc.)
+content/site.json       → Global configuration (dates, prices, links)
+content/sections/*.md   → Section copy in markdown + frontmatter
+lib/                    → Content loaders, analytics helper, utilities
+public/images/          → Optimised hero/teacher assets (AVIF + WebP)
+tests/                  → Vitest specs + Playwright snapshot
+```
 
-## 8. Next Steps / Customisation
-
-- Add translated copy to `/content/copy.en.json` and swap locale in `app/page.tsx` when ready.
-- Extend `/content/config.json` for future metadata (e.g., available seats, add-ons) without touching components.
-- Replace placeholder teacher artwork once photography is cleared.
-
-Enjoy the ship! 🧘‍♀️🌴
+Happy shipping! 🧘‍♀️🌴

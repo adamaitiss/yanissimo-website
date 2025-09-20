@@ -1,22 +1,14 @@
 export const SECTION_IDS = {
   hero: "hero",
-  venue: "why-barefoot",
+  intro: "intro",
+  overview: "overview",
+  hotel: "hotel",
   program: "program",
-  rooms: "rooms",
   pricing: "pricing",
+  booking: "booking",
   faq: "faq",
   teacher: "teacher",
-  cta: "cta",
-  footer: "footer",
+  contact: "contact",
 } as const;
 
-export const NAV_ITEMS: Array<{ id: keyof typeof SECTION_IDS; label: string }> = [
-  { id: "hero", label: "Главная" },
-  { id: "venue", label: "The Barefoot" },
-  { id: "program", label: "Программа" },
-  { id: "rooms", label: "Размещение" },
-  { id: "pricing", label: "Что включено" },
-  { id: "faq", label: "FAQ" },
-  { id: "teacher", label: "Преподаватель" },
-  { id: "cta", label: "Контакты" },
-];
+export const SCROLL_OFFSET_PX = 96;

@@ -1,11 +1,17 @@
-import { resolveSource } from "@/lib/sources";
-
 export type PlaceholderMap = Record<string, string | undefined>;
 
 const placeholderPattern = /\{\{(.*?)\}\}/g;
 const boldPattern = /\*\*(.+?)\*\*/g;
 const italicPattern = /\*(?!\*)(.+?)\*/g;
-const sourcePattern = /\[([^\]]+)\]\[(\d+)\]/g;
+const linkPattern = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+const escapeHtml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 export const applyPlaceholders = (
   text: string,
@@ -17,36 +23,38 @@ export const applyPlaceholders = (
   });
 };
 
-const linkifySources = (text: string) => {
-  return text.replace(sourcePattern, (_, label: string, id: string) => {
-    const source = resolveSource(id);
-    if (!source) {
-      return label;
+const isSafeHref = (href: string) => /^https?:\/\//i.test(href);
+
+const formatLinks = (text: string) => {
+  return text.replace(linkPattern, (_, label: string, href: string) => {
+    const safeLabel = label.trim();
+    const safeHref = href.trim();
+    if (!safeHref || !isSafeHref(safeHref)) {
+      return safeLabel;
     }
-    return `<a href="${source.url}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+    return `<a href="${safeHref}" target="_blank" rel="noopener noreferrer">${safeLabel}</a>`;
   });
 };
 
 export const formatRichTextToHtml = (
   text: string,
-  replacements: PlaceholderMap,
+  replacements: PlaceholderMap = {},
 ) => {
   const withPlaceholders = applyPlaceholders(text, replacements);
-  const withSources = linkifySources(withPlaceholders);
-  const withBold = withSources.replace(boldPattern, "<strong>$1</strong>");
+  const escaped = escapeHtml(withPlaceholders);
+  const withLinks = formatLinks(escaped);
+  const withBold = withLinks.replace(boldPattern, "<strong>$1</strong>");
   const withItalics = withBold.replace(italicPattern, "<em>$1</em>");
-
-  return withItalics;
+  return withItalics.replace(/\n/g, "<br />");
 };
 
 export const extractPlainText = (
   text: string,
-  replacements: PlaceholderMap,
+  replacements: PlaceholderMap = {},
 ) => {
   const withPlaceholders = applyPlaceholders(text, replacements);
-  const strippedSources = withPlaceholders.replace(sourcePattern, (_, label: string) => label);
-  const withoutBold = strippedSources.replace(boldPattern, "$1");
+  const withoutLinks = withPlaceholders.replace(linkPattern, (_, label: string) => label);
+  const withoutBold = withoutLinks.replace(boldPattern, "$1");
   const withoutItalics = withoutBold.replace(italicPattern, "$1");
-
   return withoutItalics.replace(/\s+/g, " ").trim();
 };

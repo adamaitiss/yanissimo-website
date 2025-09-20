@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
-import { Inter, Playfair_Display, Geist_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
+
 import "./globals.css";
+
 import { Analytics } from "@/components/analytics";
+import { getSiteContent } from "@/lib/content";
 
 const inter = Inter({
   subsets: ["latin", "cyrillic"],
@@ -9,49 +12,37 @@ const inter = Inter({
   display: "swap",
 });
 
-const playfair = Playfair_Display({
-  subsets: ["latin", "cyrillic"],
-  variable: "--font-playfair",
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  subsets: ["latin"],
-  variable: "--font-geist-mono",
-  display: "swap",
-});
-
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://yanissimoyoga.ru";
-const ogImage = "/images/og-maldives-retreat.jpg";
+const site = getSiteContent();
+const envSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+const siteUrl = (envSiteUrl ?? site.meta.siteUrl).replace(/\/$/, "");
+const ogImage = site.meta.ogImage;
 const gaId = process.env.NEXT_PUBLIC_GA_ID;
 const plausibleDomain = process.env.NEXT_PUBLIC_PLAUSIBLE_DOMAIN;
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
-    default: "Yanissimo Yoga · Maldives Retreat",
-    template: "%s · Yanissimo Yoga",
+    default: site.meta.title,
+    template: `%s · ${site.siteName}`,
   },
-  description:
-    "7-дневный йога-ретрит Yanissimo Yoga в The Barefoot Eco Hotel: практика, бирюзовая лагуна и эко-подход на острове Ханимаадху.",
+  description: site.meta.description,
   alternates: {
     canonical: "/",
   },
+  themeColor: site.meta.themeColor,
   openGraph: {
-    title: "Yanissimo Yoga · Maldives Retreat",
-    description:
-      "7 дней практик, море и эко-концепция The Barefoot Eco Hotel на острове Ханимаадху, Мальдивы.",
+    title: site.meta.title,
+    description: site.meta.description,
     url: siteUrl,
-    siteName: "Yanissimo Yoga",
+    siteName: site.siteName,
     locale: "ru_RU",
     type: "website",
-    images: [{ url: ogImage, width: 1200, height: 630, alt: "Yanissimo Yoga Retreat at The Barefoot Eco Hotel" }],
+    images: [{ url: ogImage, width: 1200, height: 630, alt: site.meta.title }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Yanissimo Yoga · Maldives Retreat",
-    description:
-      "Йога, море и эко-ретрит в The Barefoot Eco Hotel (Ханимаадху, Мальдивы).",
+    title: site.meta.title,
+    description: site.meta.description,
     images: [ogImage],
   },
   robots: {
@@ -67,7 +58,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
-      <body className={`${inter.variable} ${playfair.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${inter.variable} antialiased`}>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:absolute focus:left-6 focus:top-6 focus:z-50 focus:rounded-full focus:bg-primary focus:px-4 focus:py-2 focus:text-primary-foreground"

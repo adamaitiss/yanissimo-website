@@ -1,0 +1,60 @@
+{
+  "siteName": "Yanissimo Yoga",
+  "hero": {
+    "title": "YOGA + OCEAN",
+    "location": "Мальдивы",
+    "datesLine": "27 февраля–6 марта 2026",
+    "primaryCta": { "label": "СТОИМОСТЬ", "href": "#pricing" },
+    "secondaryCta": { "label": "ЗАБРОНИРОВАТЬ", "href": "https://forms.gle/CQEx2U2KduZYjZ5SA" }
+  },
+  "event": {
+    "name": "YOGA + OCEAN · Yanissimo Yoga Retreat",
+    "startDate": "2026-02-27",
+    "endDate": "2026-03-06",
+    "description": "Йога-ретрит на острове Ханимадху, Мальдивы: 7 ночей/8 дней, две практики в день и эко-отель The Barefoot.",
+    "location": {
+      "hotel": "The Barefoot Eco Hotel",
+      "island": "Ханимадху",
+      "atoll": "Haa Dhaalu",
+      "countryCode": "MV"
+    }
+  },
+  "navigation": [
+    { "id": "overview", "label": "О ретрите" },
+    { "id": "program", "label": "Программа" },
+    { "id": "pricing", "label": "Стоимость" },
+    { "id": "faq", "label": "FAQ" }
+  ],
+  "pricing": {
+    "double": {
+      "title": "двухместное проживание",
+      "earlyBird": { "label": "early-bird до 17 октября", "price": "1 880$" },
+      "regular": { "label": "обычная цена", "price": "1 980$" }
+    },
+    "single": {
+      "title": "одноместное проживание",
+      "earlyBird": { "label": "early-bird", "price": "2 290$" },
+      "regular": { "label": "обычная цена", "price": "2 390$" }
+    }
+  },
+  "booking": {
+    "deposit": "400$",
+    "bookingDeadline": "2025-12-25",
+    "balanceDue": "2026-01-25",
+    "formUrl": "https://forms.gle/CQEx2U2KduZYjZ5SA"
+  },
+  "contact": {
+    "phone": "+79032780279",
+    "telegram": "https://t.me/yanissimo",
+    "whatsapp": "https://wa.me/79032780279",
+    "instagram": "https://instagram.com/yanissimo",
+    "email": null
+  },
+  "meta": {
+    "title": "YOGA + OCEAN · Yanissimo Yoga",
+    "description": "Ретрит Yanissimo Yoga на Мальдивах: 27 февраля–6 марта 2026, Ханимадху, The Barefoot Eco Hotel. Две практики в день, проживание, перелёт Мале–Ханимадху и трансфер.",
+    "ogImage": "/images/og-yoga-ocean.jpg",
+    "themeColor": "#eceae6",
+    "siteUrl": "https://yanissimoyoga.ru"
+  }
+}
