@@ -8,15 +8,14 @@ const ROOT_DIR = process.cwd();
 const SITE_FILE = path.join(ROOT_DIR, "content", "site.json");
 const SECTIONS_DIR = path.join(ROOT_DIR, "content", "sections");
 
-const pricePointSchema = z.object({
+const pricingItemSchema = z.object({
   label: z.string(),
-  price: z.string(),
+  price: z.number().positive(),
 });
 
-const priceTierSchema = z.object({
-  title: z.string(),
-  earlyBird: pricePointSchema,
-  regular: pricePointSchema,
+const pricingSchema = z.object({
+  currency: z.string(),
+  items: z.array(pricingItemSchema).length(4),
 });
 
 export const siteContentSchema = z.object({
@@ -34,19 +33,14 @@ export const siteContentSchema = z.object({
     endDate: z.string(),
     description: z.string(),
     location: z.object({
-      hotel: z.string(),
+      name: z.string(),
       island: z.string(),
       atoll: z.string(),
       countryCode: z.string().length(2),
     }),
   }),
-  navigation: z
-    .array(z.object({ id: z.string(), label: z.string() }))
-    .max(4),
-  pricing: z.object({
-    double: priceTierSchema,
-    single: priceTierSchema,
-  }),
+  navigation: z.array(z.object({ id: z.string(), label: z.string() })).min(1),
+  pricing: pricingSchema,
   booking: z.object({
     deposit: z.string(),
     bookingDeadline: z.string(),
@@ -90,6 +84,24 @@ const pricingSectionSchema = z.object({
   id: z.literal("pricing"),
   title: z.string(),
   included: z.array(z.string()).min(1),
+});
+
+const roomsImageSchema = z.object({
+  src: z.string(),
+  alt: z.string(),
+});
+
+const roomsCardSchema = z.object({
+  title: z.string(),
+  size: z.string(),
+  description: z.string(),
+  images: z.array(roomsImageSchema).min(1).max(2),
+});
+
+const roomsSectionSchema = z.object({
+  id: z.literal("rooms"),
+  title: z.string(),
+  cards: z.array(roomsCardSchema).length(2),
 });
 
 const bookingSectionSchema = z.object({
@@ -189,6 +201,13 @@ export const getProgramSection = () => {
   };
 };
 
+export type RoomsSection = ReturnType<typeof getRoomsSection>;
+export const getRoomsSection = () => {
+  const { data } = loadMarkdown("rooms.md");
+  const meta = roomsSectionSchema.parse(data);
+  return meta;
+};
+
 export type PricingSection = ReturnType<typeof getPricingSection>;
 export const getPricingSection = () => {
   const { data } = loadMarkdown("pricing.md");
@@ -225,6 +244,7 @@ export const getPageContent = () => {
     overview: getOverviewSection(),
     hotel: getHotelSection(),
     program: getProgramSection(),
+    rooms: getRoomsSection(),
     pricing: getPricingSection(),
     booking: getBookingSection(),
     faq: getFaqSection(),

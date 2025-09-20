@@ -8,27 +8,13 @@ export type PricingSectionProps = {
   pricing: SiteContent["pricing"];
 };
 
-const PricingCard = ({
-  title,
-  earlyBird,
-  regular,
-}: SiteContent["pricing"][keyof SiteContent["pricing"]]) => {
-  return (
-    <article className="rounded-3xl border border-border bg-white p-6 text-foreground shadow-sm">
-      <h3 className="text-lg font-semibold uppercase tracking-[0.2em] text-accent">{title}</h3>
-      <div className="mt-6 space-y-3 text-sm font-medium text-muted-foreground">
-        <p>
-          <span className="block text-xs uppercase tracking-[0.28em] text-muted-foreground/80">
-            {earlyBird.label}
-          </span>
-          <span className="text-2xl font-semibold text-foreground">{earlyBird.price}</span>
-        </p>
-        <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground/80">
-          {regular.label} {regular.price}
-        </p>
-      </div>
-    </article>
-  );
+const formatPrice = (value: number, currency: string) => {
+  return new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency,
+    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+  }).format(value);
 };
 
 export const PricingSection = ({ pricing, section }: PricingSectionProps) => {
@@ -53,9 +39,24 @@ export const PricingSection = ({ pricing, section }: PricingSectionProps) => {
             ))}
           </ul>
         </div>
-        <div className="space-y-6">
-          <PricingCard {...pricing.double} />
-          <PricingCard {...pricing.single} />
+        <div>
+          <article className="rounded-3xl border border-border bg-white p-6 text-foreground shadow-sm">
+            <h3 className="text-lg font-semibold uppercase tracking-[0.2em] text-accent">
+              Стоимость участия
+            </h3>
+            <div className="mt-6 space-y-4 text-sm text-muted-foreground">
+              {pricing.items.map((item) => (
+                <div key={item.label} className="flex items-baseline justify-between gap-4">
+                  <span className="text-xs uppercase tracking-[0.28em] text-muted-foreground/80">
+                    {item.label}
+                  </span>
+                  <span className="text-2xl font-semibold text-foreground">
+                    {formatPrice(item.price, pricing.currency)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </article>
         </div>
       </div>
     </section>

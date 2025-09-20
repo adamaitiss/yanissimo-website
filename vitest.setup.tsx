@@ -1,4 +1,5 @@
 import React, { type ComponentPropsWithoutRef } from "react";
+import { vi } from "vitest";
 import "@testing-library/jest-dom/vitest";
 
 // Ensure React is available globally for components compiled in legacy JSX mode during tests
@@ -30,9 +31,13 @@ type NextImageMockProps = ComponentPropsWithoutRef<"img"> & {
 
 vi.mock("next/image", () => ({
   __esModule: true,
-  default: ({ src, alt, fill: _fill, priority: _priority, ...rest }: NextImageMockProps) => {
+  default: ({ src, alt, ...rest }: NextImageMockProps) => {
+    const { fill, priority, ...imgProps } = rest;
+    void fill;
+    void priority;
+
     const resolvedSrc = typeof src === "string" ? src : src.src;
     // eslint-disable-next-line @next/next/no-img-element
-    return <img src={resolvedSrc} alt={alt ?? ""} {...rest} />;
+    return <img src={resolvedSrc} alt={alt ?? ""} {...imgProps} />;
   },
 }));

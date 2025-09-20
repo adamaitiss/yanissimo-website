@@ -8,12 +8,23 @@ import { getPageContent } from "@/lib/content";
 const { pricing: pricingSection, site } = getPageContent();
 
 describe("PricingSection", () => {
-  it("lists included items and pricing tiers", () => {
+  it("lists included items and four pricing lines", () => {
     render(<PricingSection section={pricingSection} pricing={site.pricing} />);
 
     expect(screen.getByRole("heading", { name: /Что включено/i })).toBeInTheDocument();
     expect(screen.getByText(/проживание в эко-отеле/i)).toBeInTheDocument();
-    expect(screen.getByText((text) => text.includes("1 880$"))).toBeInTheDocument();
-    expect(screen.getByText((text) => text.includes("2 390$"))).toBeInTheDocument();
+    [
+      "Beachside (single)",
+      "Beachside (double)",
+      "Beachfront (single)",
+      "Beachfront (double)",
+    ].forEach((label) => {
+      const pattern = new RegExp(label.replace(/[()]/g, "\\$&"), "i");
+      expect(screen.getByText(pattern)).toBeInTheDocument();
+    });
+
+    ["$2,690", "$2,140", "$2,890", "$2,290"].forEach((amount) => {
+      expect(screen.getByText(amount)).toBeInTheDocument();
+    });
   });
 });

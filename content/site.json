@@ -3,17 +3,17 @@
   "hero": {
     "title": "YOGA + OCEAN",
     "location": "Мальдивы",
-    "datesLine": "27 февраля–6 марта 2026",
+    "datesLine": "27 февраля – 6 марта 2026",
     "primaryCta": { "label": "СТОИМОСТЬ", "href": "#pricing" },
     "secondaryCta": { "label": "ЗАБРОНИРОВАТЬ", "href": "https://forms.gle/CQEx2U2KduZYjZ5SA" }
   },
   "event": {
-    "name": "YOGA + OCEAN · Yanissimo Yoga Retreat",
+    "name": "Yanissimo Yoga · Maldives Retreat «YOGA + OCEAN»",
     "startDate": "2026-02-27",
     "endDate": "2026-03-06",
-    "description": "Йога-ретрит на острове Ханимадху, Мальдивы: 7 ночей/8 дней, две практики в день и эко-отель The Barefoot.",
+    "description": "Йога-ретрит на острове Ханимадху, Мальдивы: 7 ночей/8 дней, две практики в день, питание и трансферы включены.",
     "location": {
-      "hotel": "The Barefoot Eco Hotel",
+      "name": "Ханимадху, Haa Dhaalu, Мальдивы",
       "island": "Ханимадху",
       "atoll": "Haa Dhaalu",
       "countryCode": "MV"
@@ -21,24 +21,23 @@
   },
   "navigation": [
     { "id": "overview", "label": "О ретрите" },
+    { "id": "hotel", "label": "Локация" },
     { "id": "program", "label": "Программа" },
+    { "id": "rooms", "label": "Размещение" },
     { "id": "pricing", "label": "Стоимость" },
     { "id": "faq", "label": "FAQ" }
   ],
   "pricing": {
-    "double": {
-      "title": "двухместное проживание",
-      "earlyBird": { "label": "early-bird до 17 октября", "price": "1 880$" },
-      "regular": { "label": "обычная цена", "price": "1 980$" }
-    },
-    "single": {
-      "title": "одноместное проживание",
-      "earlyBird": { "label": "early-bird", "price": "2 290$" },
-      "regular": { "label": "обычная цена", "price": "2 390$" }
-    }
+    "currency": "USD",
+    "items": [
+      { "label": "Beachside (single)", "price": 2690 },
+      { "label": "Beachside (double)", "price": 2140 },
+      { "label": "Beachfront (single)", "price": 2890 },
+      { "label": "Beachfront (double)", "price": 2290 }
+    ]
   },
   "booking": {
-    "deposit": "400$",
+    "deposit": "$400",
     "bookingDeadline": "2025-12-25",
     "balanceDue": "2026-01-25",
     "formUrl": "https://forms.gle/CQEx2U2KduZYjZ5SA"
@@ -52,7 +51,7 @@
   },
   "meta": {
     "title": "YOGA + OCEAN · Yanissimo Yoga",
-    "description": "Ретрит Yanissimo Yoga на Мальдивах: 27 февраля–6 марта 2026, Ханимадху, The Barefoot Eco Hotel. Две практики в день, проживание, перелёт Мале–Ханимадху и трансфер.",
+    "description": "Ретрит Yanissimo Yoga на Мальдивах: 27 февраля – 6 марта 2026, Ханимадху. Две практики в день, проживание, питание и внутренние перелёты включены.",
     "ogImage": "/images/og-yoga-ocean.jpg",
     "themeColor": "#eceae6",
     "siteUrl": "https://yanissimoyoga.ru"

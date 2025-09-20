@@ -2,6 +2,7 @@ import { Header } from "@/components/header";
 import { Hero } from "@/components/hero";
 import { TextSection } from "@/components/text-section";
 import { PricingSection } from "@/components/pricing-section";
+import { Rooms } from "@/components/rooms";
 import { BookingSteps } from "@/components/booking-steps";
 import { FAQ } from "@/components/faq";
 import { Teacher } from "@/components/teacher";
@@ -12,11 +13,6 @@ import { getPageContent } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { extractPlainText } from "@/lib/text";
 
-const parsePrice = (value: string) => {
-  const digits = value.replace(/[^\d]/g, "");
-  return digits ? Number(digits) : undefined;
-};
-
 export default function HomePage() {
   const {
     site,
@@ -24,6 +20,7 @@ export default function HomePage() {
     overview,
     hotel,
     program,
+    rooms,
     pricing,
     booking,
     faq,
@@ -51,7 +48,7 @@ export default function HomePage() {
     eventStatus: "https://schema.org/EventScheduled",
     location: {
       "@type": "Place",
-      name: site.event.location.hotel,
+      name: site.event.location.name,
       address: {
         "@type": "PostalAddress",
         addressLocality: site.event.location.island,
@@ -64,10 +61,11 @@ export default function HomePage() {
       name: site.siteName,
       url: site.meta.siteUrl,
     },
-    offers: [site.pricing.double, site.pricing.single].map((tier) => ({
+    offers: site.pricing.items.map((item) => ({
       "@type": "Offer",
-      price: parsePrice(tier.earlyBird.price) ?? parsePrice(tier.regular.price),
-      priceCurrency: "USD",
+      name: item.label,
+      price: item.price,
+      priceCurrency: site.pricing.currency,
       availability: "https://schema.org/LimitedAvailability",
       url: site.booking.formUrl,
     })),
@@ -106,6 +104,7 @@ export default function HomePage() {
         <TextSection id={overview.id} title={overview.title} paragraphs={overview.paragraphs} />
         <TextSection id={hotel.id} title={hotel.title} paragraphs={hotel.paragraphs} background="muted" />
         <TextSection id={program.id} title={program.title} paragraphs={program.paragraphs} />
+        <Rooms section={rooms} />
         <PricingSection section={pricing} pricing={site.pricing} />
         <BookingSteps section={booking} replacements={replacements} />
         <FAQ section={faq} replacements={replacements} />

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
 import "./globals.css";
@@ -29,7 +29,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  themeColor: site.meta.themeColor,
   openGraph: {
     title: site.meta.title,
     description: site.meta.description,
@@ -49,6 +48,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: site.meta.themeColor,
 };
 
 export default function RootLayout({
