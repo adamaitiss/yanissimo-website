@@ -34,7 +34,7 @@ export const Gallery = ({ replacements, section }: GalleryProps) => {
           images={section.images}
           groupLabel={`галереи «${section.title}»`}
           gridClassName="grid gap-4 sm:grid-cols-2 lg:grid-cols-3"
-          thumbnailSizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+          thumbnailSizes="(max-width: 768px) 50vw, (max-width: 1200px) 33vw, 25vw"
           priorityFirst
         />
       </div>

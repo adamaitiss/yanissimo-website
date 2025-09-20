@@ -25,6 +25,7 @@
   --primary-foreground: #f8f6f2;
   --border: rgba(79, 76, 76, 0.18);
   --radius: 0.75rem;
+  --section-scroll-margin: 96px;
 }
 
 @layer base {
@@ -42,6 +43,10 @@
     @apply font-sans text-foreground;
     background-color: var(--background);
     line-height: 1.6;
+  }
+
+  section[id]:not(#hero) {
+    scroll-margin-top: var(--section-scroll-margin);
   }
 
   h1,

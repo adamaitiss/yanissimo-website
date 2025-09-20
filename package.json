@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/prebuild-clean.mjs && npm run img:opt && next build",
     "start": "next start",
-    "lint": "eslint",
+    "img:opt": "node scripts/optimize-images.mjs",
+    "lint": "npm run lint:content && eslint",
+    "lint:content": "node scripts/check-content.mjs",
     "test": "vitest run",
     "test:e2e": "playwright test"
   },
@@ -21,7 +23,6 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "tailwind-merge": "^3.3.1",
-    "yet-another-react-lightbox": "^3.25.0",
     "zod": "^4.1.9"
   },
   "devDependencies": {
@@ -38,6 +39,7 @@
     "eslint": "^9",
     "eslint-config-next": "15.5.3",
     "jsdom": "^27.0.0",
+    "sharp": "^0.34.4",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.3.8",
     "typescript": "^5",

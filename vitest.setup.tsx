@@ -31,10 +31,11 @@ type NextImageMockProps = ComponentPropsWithoutRef<"img"> & {
 
 vi.mock("next/image", () => ({
   __esModule: true,
-  default: ({ src, alt, ...rest }: NextImageMockProps) => {
-    const { fill, priority, ...imgProps } = rest;
+  default: ({ src, alt, ...rest }: NextImageMockProps & { blurDataURL?: string }) => {
+    const { fill, priority, blurDataURL, ...imgProps } = rest;
     void fill;
     void priority;
+    void blurDataURL;
 
     const resolvedSrc = typeof src === "string" ? src : src.src;
     // eslint-disable-next-line @next/next/no-img-element

@@ -17,9 +17,9 @@ describe("content model", () => {
 
   it("provides gallery imagery", () => {
     expect(content.gallery.id).toBe("gallery");
-    expect(content.gallery.images).toHaveLength(19);
+    expect(content.gallery.images).toHaveLength(20);
     expect(content.gallery.images[0]).toEqual(
-      expect.objectContaining({ src: "/gallery/01.webp", width: 1600, height: 1200 }),
+      expect.objectContaining({ src: "/gallery/lobby-welcome-lounge.webp", width: 1920, height: 1440 }),
     );
   });
 

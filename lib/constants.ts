@@ -5,6 +5,7 @@ export const SECTION_IDS = {
   hotel: "hotel",
   program: "program",
   rooms: "rooms",
+  bookingForm: "booking-form",
   gallery: "gallery",
   pricing: "pricing",
   booking: "booking",

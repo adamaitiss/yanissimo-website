@@ -10,6 +10,7 @@ import { Contacts } from "@/components/contacts";
 import { Footer } from "@/components/footer";
 import { Gallery } from "@/components/gallery";
 import { MobileCTABar } from "@/components/mobile-cta-bar";
+import { BookingForm } from "@/components/booking-form";
 import { getPageContent } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { extractPlainText } from "@/lib/text";
@@ -94,7 +95,7 @@ export default function HomePage() {
   return (
     <div className="bg-background text-foreground">
       <Header
-        brand={site.siteName}
+        brand={site.hero.title}
         navItems={site.navigation}
         bookHref={site.booking.formUrl}
         bookLabel={site.hero.secondaryCta.label}
@@ -134,8 +135,14 @@ export default function HomePage() {
         />
         <Rooms section={rooms} />
         <Teacher section={teacher} />
+        <PricingSection
+          section={pricing}
+          pricing={site.pricing}
+          bookCta={{ href: site.booking.formUrl, label: site.hero.secondaryCta.label, external: true }}
+          replacements={replacements}
+        />
+        <BookingForm />
         <Gallery section={gallery} replacements={replacements} />
-        <PricingSection section={pricing} pricing={site.pricing} />
         <BookingSteps section={booking} replacements={replacements} />
         <FAQ section={faq} replacements={replacements} />
         <Contacts contact={site.contact} />

@@ -5,6 +5,7 @@ import { useCallback } from "react";
 
 import { trackEvent } from "@/lib/analytics";
 import { SECTION_IDS, SCROLL_OFFSET_PX } from "@/lib/constants";
+import { IMAGE_PLACEHOLDERS } from "@/lib/generated/image-placeholders";
 
 export type HeroProps = {
   title: string;
@@ -44,7 +45,10 @@ export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: H
           alt="Мальдивы, вид на лагуну и пляж"
           fill
           priority
+          fetchPriority="high"
           sizes="100vw"
+          placeholder="blur"
+          blurDataURL={IMAGE_PLACEHOLDERS.hero}
           className="object-cover"
         />
       </picture>

@@ -83,6 +83,8 @@ const textSectionSchema = z.object({
 const pricingSectionSchema = z.object({
   id: z.literal("pricing"),
   title: z.string(),
+  badgeLabel: z.string(),
+  secondaryBadgeLabel: z.string(),
   included: z.array(z.string()).min(1),
 });
 
