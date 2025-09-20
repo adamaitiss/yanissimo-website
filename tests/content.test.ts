@@ -1,14 +1,26 @@
 import { describe, expect, it } from "vitest";
 
 import { getPageContent } from "@/lib/content";
+import { EVENT_DATES_FULL, EVENT_DATES_SHORT, EVENT_END, EVENT_START } from "@/lib/constants";
 
 const content = getPageContent();
 
 describe("content model", () => {
   it("exposes hero data", () => {
     expect(content.site.hero.title).toBe("YOGA + OCEAN");
-    expect(content.site.hero.datesLine).toBe("27 февраля – 6 марта 2026");
+    expect(content.site.hero.datesLine).toBe(EVENT_DATES_SHORT);
+    expect(content.site.event.startDate).toBe(EVENT_START);
+    expect(content.site.event.endDate).toBe(EVENT_END);
+    expect(content.site.event.description).toContain(EVENT_DATES_FULL);
     expect(content.site.hero.secondaryCta.href).toContain("forms.gle");
+  });
+
+  it("provides gallery imagery", () => {
+    expect(content.gallery.id).toBe("gallery");
+    expect(content.gallery.images).toHaveLength(19);
+    expect(content.gallery.images[0]).toEqual(
+      expect.objectContaining({ src: "/gallery/01.webp", width: 1600, height: 1200 }),
+    );
   });
 
   it("provides pricing matrix with USD amounts", () => {

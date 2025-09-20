@@ -22,7 +22,8 @@ npm run dev
 
 - `content/site.json` — single source of truth for hero title, dates, navigation labels, Google Form URL, pricing tiers (early-bird/regular) and contact profiles.
 - `content/sections/*.md` — markdown + frontmatter for each section:
-  - `intro.md`, `overview.md`, `hotel.md`, `program.md`, `pricing.md`, `booking.md`, `faq.md`, `teacher.md`
+  - `intro.md`, `overview.md`, `hotel.md`, `program.md`, `rooms.md`, `pricing.md`, `booking.md`, `faq.md`, `teacher.md`, `gallery.md`
+  - `rooms.md` and `gallery.md` store lightbox metadata (`src`, `alt`, `width`, `height`) so Next.js can render responsive thumbnails without layout shift.
   - placeholders such as `{{BOOKING_DEADLINE}}`, `{{DEPOSIT}}`, `{{BALANCE_DUE}}` resolve from `site.json` on render.
 
 Updating copy is done by editing these markdown files. No component code is required for day-to-day changes.
@@ -41,6 +42,8 @@ Updating copy is done by editing these markdown files. No component code is requ
 
 - Hero assets live in `public/images/hero-aerial.avif|webp|original.jpg` to keep the same crop as the original site.
 - Teacher portrait (`teacher-yana.webp`) is reused from the legacy build.
+- Room galleries use WebP files in `public/rooms/beachside/` and `public/rooms/beachfront/` (up to four images per room).
+- The general photo gallery stores 10–14 WebP images in `public/gallery/`.
 - Neutral palette is implemented via CSS variables in `app/globals.css` to match the `#4f4c4c` / `#e0e0e0` tones.
 
 ## Analytics Hooks
@@ -85,6 +88,12 @@ The export is fully static—no server runtime required.
 - Sticky header with smooth anchor scrolling (`SCROLL_OFFSET_PX` maintains spacing).
 - Mobile bottom booking bar appears after the first scroll.
 - FAQ uses `<details>` elements with keyboard support.
+
+## Galleries & Pricing Maintenance
+
+- **Room galleries**: add or replace WebP images in `public/rooms/beachside/` and `public/rooms/beachfront/` (≈1600–1800 px on the long edge, <300 KB). Update the corresponding entries in `content/sections/rooms.md` with the new `src`, `alt`, `width`, and `height`. The lightbox groups images per room automatically and preloads the first thumbnail.
+- **General gallery**: place optimised WebP files in `public/gallery/` (10–14 images). Maintain metadata in `content/sections/gallery.md` so the grid and lightbox stay in sync.
+- **Pricing order**: `components/pricing-section.tsx` sorts `site.pricing.items` by price at render time. Update values inside `content/site.json`; the visual order will follow the numeric amounts automatically.
 
 ## Folder Map (high-level)
 

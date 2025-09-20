@@ -3,15 +3,15 @@
   "hero": {
     "title": "YOGA + OCEAN",
     "location": "Мальдивы",
-    "datesLine": "27 февраля – 6 марта 2026",
+    "datesLine": "14–21 марта 2026",
     "primaryCta": { "label": "СТОИМОСТЬ", "href": "#pricing" },
     "secondaryCta": { "label": "ЗАБРОНИРОВАТЬ", "href": "https://forms.gle/CQEx2U2KduZYjZ5SA" }
   },
   "event": {
     "name": "Yanissimo Yoga · Maldives Retreat «YOGA + OCEAN»",
-    "startDate": "2026-02-27",
-    "endDate": "2026-03-06",
-    "description": "Йога-ретрит на острове Ханимадху, Мальдивы: 7 ночей/8 дней, две практики в день, питание и трансферы включены.",
+    "startDate": "2026-03-14",
+    "endDate": "2026-03-21",
+    "description": "Йога-ретрит на острове Ханимадху, Мальдивы: 14–21 марта 2026 года, 7 ночей, две практики в день, питание и трансферы включены.",
     "location": {
       "name": "Ханимадху, Haa Dhaalu, Мальдивы",
       "island": "Ханимадху",
@@ -24,8 +24,10 @@
     { "id": "hotel", "label": "Локация" },
     { "id": "program", "label": "Программа" },
     { "id": "rooms", "label": "Размещение" },
+    { "id": "teacher", "label": "Инструктор" },
     { "id": "pricing", "label": "Стоимость" },
-    { "id": "faq", "label": "FAQ" }
+    { "id": "faq", "label": "FAQ" },
+    { "id": "gallery", "label": "Галерея" }
   ],
   "pricing": {
     "currency": "USD",
@@ -51,7 +53,7 @@
   },
   "meta": {
     "title": "YOGA + OCEAN · Yanissimo Yoga",
-    "description": "Ретрит Yanissimo Yoga на Мальдивах: 27 февраля – 6 марта 2026, Ханимадху. Две практики в день, проживание, питание и внутренние перелёты включены.",
+    "description": "Ретрит Yanissimo Yoga на Мальдивах: 14–21 марта 2026 года, Ханимадху. Две практики в день, проживание, питание и внутренние перелёты включены.",
     "ogImage": "/images/og-yoga-ocean.jpg",
     "themeColor": "#eceae6",
     "siteUrl": "https://yanissimoyoga.ru"

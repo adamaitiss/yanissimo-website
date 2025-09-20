@@ -8,10 +8,12 @@ import { FAQ } from "@/components/faq";
 import { Teacher } from "@/components/teacher";
 import { Contacts } from "@/components/contacts";
 import { Footer } from "@/components/footer";
+import { Gallery } from "@/components/gallery";
 import { MobileCTABar } from "@/components/mobile-cta-bar";
 import { getPageContent } from "@/lib/content";
 import { formatDate } from "@/lib/dates";
 import { extractPlainText } from "@/lib/text";
+import { EVENT_DATES_FULL, EVENT_DATES_SHORT, EVENT_END, EVENT_START } from "@/lib/constants";
 
 export default function HomePage() {
   const {
@@ -21,16 +23,21 @@ export default function HomePage() {
     hotel,
     program,
     rooms,
+    gallery,
     pricing,
     booking,
     faq,
     teacher,
   } = getPageContent();
 
+  const eventStartDay = formatDate(EVENT_START, "ru-RU", { day: "2-digit", month: "2-digit" });
+
   const replacements = {
     DEPOSIT: site.booking.deposit,
     BOOKING_DEADLINE: formatDate(site.booking.bookingDeadline),
     BALANCE_DUE: formatDate(site.booking.balanceDue),
+    EVENT_DATES_FULL,
+    EVENT_START_DAY: eventStartDay,
   } as const;
 
   const eventJsonLd = {
@@ -42,8 +49,8 @@ export default function HomePage() {
       `${site.meta.siteUrl.replace(/\/$/, "")}${site.meta.ogImage}`,
       `${site.meta.siteUrl.replace(/\/$/, "")}/images/hero-aerial.webp`,
     ],
-    startDate: site.event.startDate,
-    endDate: site.event.endDate,
+    startDate: EVENT_START,
+    endDate: EVENT_END,
     eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
     eventStatus: "https://schema.org/EventScheduled",
     location: {
@@ -96,19 +103,41 @@ export default function HomePage() {
         <Hero
           title={site.hero.title}
           location={site.hero.location}
-          datesLine={site.hero.datesLine}
+          datesLine={EVENT_DATES_SHORT}
           primaryCta={site.hero.primaryCta}
           secondaryCta={site.hero.secondaryCta}
         />
-        <TextSection id={intro.id} eyebrow={intro.eyebrow} paragraphs={intro.paragraphs} />
-        <TextSection id={overview.id} title={overview.title} paragraphs={overview.paragraphs} />
-        <TextSection id={hotel.id} title={hotel.title} paragraphs={hotel.paragraphs} background="muted" />
-        <TextSection id={program.id} title={program.title} paragraphs={program.paragraphs} />
+        <TextSection
+          id={intro.id}
+          eyebrow={intro.eyebrow}
+          paragraphs={intro.paragraphs}
+          replacements={replacements}
+        />
+        <TextSection
+          id={overview.id}
+          title={overview.title}
+          paragraphs={overview.paragraphs}
+          replacements={replacements}
+        />
+        <TextSection
+          id={hotel.id}
+          title={hotel.title}
+          paragraphs={hotel.paragraphs}
+          replacements={replacements}
+          background="muted"
+        />
+        <TextSection
+          id={program.id}
+          title={program.title}
+          paragraphs={program.paragraphs}
+          replacements={replacements}
+        />
         <Rooms section={rooms} />
+        <Teacher section={teacher} />
+        <Gallery section={gallery} replacements={replacements} />
         <PricingSection section={pricing} pricing={site.pricing} />
         <BookingSteps section={booking} replacements={replacements} />
         <FAQ section={faq} replacements={replacements} />
-        <Teacher section={teacher} />
         <Contacts contact={site.contact} />
       </main>
       <Footer />

@@ -50,7 +50,7 @@ export const PricingSection = ({ pricing, section }: PricingSectionProps) => {
                   <span className="text-xs uppercase tracking-[0.28em] text-muted-foreground/80">
                     {item.label}
                   </span>
-                  <span className="text-2xl font-semibold text-foreground">
+                  <span className="text-2xl font-semibold text-foreground" data-testid="pricing-price">
                     {formatPrice(item.price, pricing.currency)}
                   </span>
                 </div>

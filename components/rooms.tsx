@@ -1,16 +1,10 @@
-import Image from "next/image";
-
 import { SECTION_IDS } from "@/lib/constants";
 import type { RoomsSection } from "@/lib/content";
+import { RoomGallery } from "@/components/room-gallery";
 
 export type RoomsProps = {
   section: RoomsSection;
 };
-
-const imageDimensions = {
-  width: 640,
-  height: 480,
-} as const;
 
 export const Rooms = ({ section }: RoomsProps) => {
   return (
@@ -42,19 +36,7 @@ export const Rooms = ({ section }: RoomsProps) => {
                   {card.description}
                 </p>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
-                {card.images.map((image) => (
-                  <div key={image.src} className="overflow-hidden rounded-2xl bg-muted">
-                    <Image
-                      src={`/images/${image.src}`}
-                      alt={image.alt}
-                      width={imageDimensions.width}
-                      height={imageDimensions.height}
-                      className="h-full w-full object-cover"
-                    />
-                  </div>
-                ))}
-              </div>
+              <RoomGallery roomTitle={card.title} images={card.images} />
             </article>
           ))}
         </div>

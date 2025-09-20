@@ -89,19 +89,28 @@ const pricingSectionSchema = z.object({
 const roomsImageSchema = z.object({
   src: z.string(),
   alt: z.string(),
+  width: z.number().positive(),
+  height: z.number().positive(),
 });
 
 const roomsCardSchema = z.object({
   title: z.string(),
   size: z.string(),
   description: z.string(),
-  images: z.array(roomsImageSchema).min(1).max(2),
+  images: z.array(roomsImageSchema).min(3).max(4),
 });
 
 const roomsSectionSchema = z.object({
   id: z.literal("rooms"),
   title: z.string(),
   cards: z.array(roomsCardSchema).length(2),
+});
+
+const gallerySectionSchema = z.object({
+  id: z.literal("gallery"),
+  title: z.string(),
+  description: z.string().optional(),
+  images: z.array(roomsImageSchema).min(10).max(20),
 });
 
 const bookingSectionSchema = z.object({
@@ -154,7 +163,16 @@ const loadMarkdown = (filename: string) => {
 export const getSiteContent = (): SiteContent => {
   const raw = fs.readFileSync(SITE_FILE, "utf-8");
   const json = JSON.parse(raw);
-  return siteContentSchema.parse(json);
+  const parsed = siteContentSchema.parse(json);
+  const sortedPricing = {
+    ...parsed.pricing,
+    items: [...parsed.pricing.items].sort((a, b) => a.price - b.price),
+  };
+
+  return {
+    ...parsed,
+    pricing: sortedPricing,
+  };
 };
 
 export type IntroSection = ReturnType<typeof getIntroSection>;
@@ -208,6 +226,13 @@ export const getRoomsSection = () => {
   return meta;
 };
 
+export type GallerySection = ReturnType<typeof getGallerySection>;
+export const getGallerySection = () => {
+  const { data } = loadMarkdown("gallery.md");
+  const meta = gallerySectionSchema.parse(data);
+  return meta;
+};
+
 export type PricingSection = ReturnType<typeof getPricingSection>;
 export const getPricingSection = () => {
   const { data } = loadMarkdown("pricing.md");
@@ -245,6 +270,7 @@ export const getPageContent = () => {
     hotel: getHotelSection(),
     program: getProgramSection(),
     rooms: getRoomsSection(),
+    gallery: getGallerySection(),
     pricing: getPricingSection(),
     booking: getBookingSection(),
     faq: getFaqSection(),
