@@ -25,6 +25,9 @@ playwright-report/
 # misc
 .DS_Store
 *.pem
+.npm-cache/
+_logs/
+_update-notifier-last-checked
 
 # debug
 npm-debug.log*

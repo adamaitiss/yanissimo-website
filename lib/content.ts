@@ -1,0 +1,289 @@
+import fs from "node:fs";
+import path from "node:path";
+
+import matter from "gray-matter";
+import { z } from "zod";
+
+const ROOT_DIR = process.cwd();
+const SITE_FILE = path.join(ROOT_DIR, "content", "site.json");
+const SECTIONS_DIR = path.join(ROOT_DIR, "content", "sections");
+
+const pricingItemSchema = z.object({
+  label: z.string(),
+  price: z.number().positive(),
+});
+
+const pricingSchema = z.object({
+  currency: z.string(),
+  items: z.array(pricingItemSchema).length(4),
+});
+
+export const siteContentSchema = z.object({
+  siteName: z.string(),
+  hero: z.object({
+    title: z.string(),
+    location: z.string(),
+    datesLine: z.string(),
+    primaryCta: z.object({ label: z.string(), href: z.string() }),
+    secondaryCta: z.object({
+      label: z.string(),
+      href: z
+        .string()
+        .refine(
+          (value) => value.startsWith("#") || /^https?:\/\//i.test(value),
+          "href must be a hash anchor or an absolute URL",
+        ),
+    }),
+  }),
+  event: z.object({
+    name: z.string(),
+    startDate: z.string(),
+    endDate: z.string(),
+    description: z.string(),
+    location: z.object({
+      name: z.string(),
+      island: z.string(),
+      atoll: z.string(),
+      countryCode: z.string().length(2),
+    }),
+  }),
+  navigation: z.array(z.object({ id: z.string(), label: z.string() })).min(1),
+  pricing: pricingSchema,
+  booking: z.object({
+    deposit: z.string(),
+    bookingDeadline: z.string(),
+    balanceDue: z.string(),
+    formUrl: z.string().url(),
+  }),
+  contact: z.object({
+    phone: z.string(),
+    telegram: z.string().url(),
+    whatsapp: z.string().url(),
+    instagram: z.string().url(),
+    email: z.string().email().nullable().optional(),
+  }),
+  meta: z.object({
+    title: z.string(),
+    description: z.string(),
+    ogImage: z.string(),
+    themeColor: z.string(),
+    siteUrl: z.string().url(),
+  }),
+});
+
+export type SiteContent = z.infer<typeof siteContentSchema>;
+
+const introSchema = z.object({
+  id: z.literal("intro"),
+  eyebrow: z.string(),
+});
+
+const overviewSchema = z.object({
+  id: z.literal("overview"),
+  title: z.string(),
+});
+
+const textSectionSchema = z.object({
+  id: z.string(),
+  title: z.string(),
+});
+
+const pricingSectionSchema = z.object({
+  id: z.literal("pricing"),
+  title: z.string(),
+  badgeLabel: z.string(),
+  secondaryBadgeLabel: z.string(),
+  included: z.array(z.string()).min(1),
+});
+
+const roomsImageSchema = z.object({
+  src: z.string(),
+  alt: z.string(),
+  width: z.number().positive(),
+  height: z.number().positive(),
+});
+
+const roomsCardSchema = z.object({
+  title: z.string(),
+  size: z.string(),
+  description: z.string(),
+  images: z.array(roomsImageSchema).min(3).max(4),
+});
+
+const roomsSectionSchema = z.object({
+  id: z.literal("rooms"),
+  title: z.string(),
+  cards: z.array(roomsCardSchema).length(2),
+});
+
+const gallerySectionSchema = z.object({
+  id: z.literal("gallery"),
+  title: z.string(),
+  description: z.string().optional(),
+  images: z.array(roomsImageSchema).min(10).max(20),
+});
+
+const bookingSectionSchema = z.object({
+  id: z.literal("booking"),
+  title: z.string(),
+  steps: z
+    .array(
+      z.object({
+        title: z.string(),
+        description: z.string(),
+      }),
+    )
+    .min(1),
+});
+
+const faqSectionSchema = z.object({
+  id: z.literal("faq"),
+  items: z
+    .array(
+      z.object({
+        question: z.string(),
+        answer: z.string(),
+      }),
+    )
+    .min(1),
+});
+
+const teacherSectionSchema = z.object({
+  id: z.literal("teacher"),
+  title: z.string(),
+  name: z.string(),
+  image: z.string(),
+  imageAlt: z.string(),
+  timeline: z.array(z.string()).min(1),
+});
+
+const toParagraphs = (content: string) => {
+  return content
+    .split(/\n{2,}/)
+    .map((paragraph) => paragraph.trim())
+    .filter(Boolean);
+};
+
+const loadMarkdown = (filename: string) => {
+  const fullPath = path.join(SECTIONS_DIR, filename);
+  const raw = fs.readFileSync(fullPath, "utf-8");
+  return matter(raw);
+};
+
+export const getSiteContent = (): SiteContent => {
+  const raw = fs.readFileSync(SITE_FILE, "utf-8");
+  const json = JSON.parse(raw);
+  const parsed = siteContentSchema.parse(json);
+  const sortedPricing = {
+    ...parsed.pricing,
+    items: [...parsed.pricing.items].sort((a, b) => a.price - b.price),
+  };
+
+  return {
+    ...parsed,
+    pricing: sortedPricing,
+  };
+};
+
+export type IntroSection = ReturnType<typeof getIntroSection>;
+export const getIntroSection = () => {
+  const { data, content } = loadMarkdown("intro.md");
+  const meta = introSchema.parse(data);
+  return {
+    id: meta.id,
+    eyebrow: meta.eyebrow,
+    paragraphs: toParagraphs(content),
+  };
+};
+
+export type OverviewSection = ReturnType<typeof getOverviewSection>;
+export const getOverviewSection = () => {
+  const { data, content } = loadMarkdown("overview.md");
+  const meta = overviewSchema.parse(data);
+  return {
+    id: meta.id,
+    title: meta.title,
+    paragraphs: toParagraphs(content),
+  };
+};
+
+export type HotelSection = ReturnType<typeof getHotelSection>;
+export const getHotelSection = () => {
+  const { data, content } = loadMarkdown("hotel.md");
+  const meta = textSectionSchema.parse(data);
+  return {
+    id: meta.id,
+    title: meta.title,
+    paragraphs: toParagraphs(content),
+  };
+};
+
+export type ProgramSection = ReturnType<typeof getProgramSection>;
+export const getProgramSection = () => {
+  const { data, content } = loadMarkdown("program.md");
+  const meta = textSectionSchema.parse(data);
+  return {
+    id: meta.id,
+    title: meta.title,
+    paragraphs: toParagraphs(content),
+  };
+};
+
+export type RoomsSection = ReturnType<typeof getRoomsSection>;
+export const getRoomsSection = () => {
+  const { data } = loadMarkdown("rooms.md");
+  const meta = roomsSectionSchema.parse(data);
+  return meta;
+};
+
+export type GallerySection = ReturnType<typeof getGallerySection>;
+export const getGallerySection = () => {
+  const { data } = loadMarkdown("gallery.md");
+  const meta = gallerySectionSchema.parse(data);
+  return meta;
+};
+
+export type PricingSection = ReturnType<typeof getPricingSection>;
+export const getPricingSection = () => {
+  const { data } = loadMarkdown("pricing.md");
+  const meta = pricingSectionSchema.parse(data);
+  return meta;
+};
+
+export type BookingSection = ReturnType<typeof getBookingSection>;
+export const getBookingSection = () => {
+  const { data } = loadMarkdown("booking.md");
+  const meta = bookingSectionSchema.parse(data);
+  return meta;
+};
+
+export type FAQSection = ReturnType<typeof getFaqSection>;
+export const getFaqSection = () => {
+  const { data } = loadMarkdown("faq.md");
+  const meta = faqSectionSchema.parse(data);
+  return meta;
+};
+
+export type TeacherSection = ReturnType<typeof getTeacherSection>;
+export const getTeacherSection = () => {
+  const { data } = loadMarkdown("teacher.md");
+  const meta = teacherSectionSchema.parse(data);
+  return meta;
+};
+
+export const getPageContent = () => {
+  const site = getSiteContent();
+  return {
+    site,
+    intro: getIntroSection(),
+    overview: getOverviewSection(),
+    hotel: getHotelSection(),
+    program: getProgramSection(),
+    rooms: getRoomsSection(),
+    gallery: getGallerySection(),
+    pricing: getPricingSection(),
+    booking: getBookingSection(),
+    faq: getFaqSection(),
+    teacher: getTeacherSection(),
+  };
+};
