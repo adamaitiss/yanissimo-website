@@ -5,14 +5,18 @@ import { useCallback } from "react";
 
 import { trackEvent } from "@/lib/analytics";
 import { SECTION_IDS, SCROLL_OFFSET_PX } from "@/lib/constants";
+import type { z } from "zod";
+import type { ctaSchema } from "@/lib/content";
 import { IMAGE_PLACEHOLDERS } from "@/lib/generated/image-placeholders";
+
+type CTA = z.infer<typeof ctaSchema>;
 
 export type HeroProps = {
   title: string;
   location: string;
   datesLine: string;
-  primaryCta: { label: string; href: string };
-  secondaryCta: { label: string; href: string };
+  primaryCta?: CTA | null;
+  secondaryCta: CTA;
 };
 
 export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: HeroProps) => {
@@ -24,15 +28,15 @@ export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: H
     window.scrollTo({ top, behavior: "smooth" });
   }, []);
 
-  const handleAnchorClick = useCallback(
+  const handlePrimaryClick = useCallback(
     (event: React.MouseEvent<HTMLAnchorElement>) => {
-      const anchor = event.currentTarget.getAttribute("href");
-      if (!anchor?.startsWith("#")) return;
-      event.preventDefault();
-      scrollToAnchor(anchor);
+      if (!primaryCta) return;
       trackEvent("pricing_cta_click", { source: "hero" });
+      if (!primaryCta.href.startsWith("#")) return;
+      event.preventDefault();
+      scrollToAnchor(primaryCta.href);
     },
-    [scrollToAnchor],
+    [primaryCta, scrollToAnchor],
   );
 
   const handleBookClick = useCallback(
@@ -46,6 +50,8 @@ export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: H
     },
     [scrollToAnchor, secondaryCta.href],
   );
+
+  const hasPrimaryCta = Boolean(primaryCta?.label && primaryCta.href);
 
   return (
     <section
@@ -75,13 +81,17 @@ export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: H
           <p className="text-lg font-medium tracking-[0.12em] text-white/80 md:text-xl">{datesLine}</p>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-          <a
-            href={primaryCta.href}
-            onClick={handleAnchorClick}
-            className="inline-flex min-w-[160px] items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-white/85"
-          >
-            {primaryCta.label}
-          </a>
+          {hasPrimaryCta && primaryCta ? (
+            <a
+              href={primaryCta.href}
+              target={primaryCta.href.startsWith("#") ? undefined : "_blank"}
+              rel={primaryCta.href.startsWith("#") ? undefined : "noopener noreferrer"}
+              onClick={handlePrimaryClick}
+              className="inline-flex min-w-[160px] items-center justify-center rounded-full bg-white px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-black transition hover:bg-white/85"
+            >
+              {primaryCta.label}
+            </a>
+          ) : null}
           <a
             href={secondaryCta.href}
             target={secondaryCta.href.startsWith("#") ? undefined : "_blank"}

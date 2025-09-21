@@ -37,7 +37,7 @@ describe("content model", () => {
   });
 
   it("keeps booking deadlines and deposit", () => {
-    expect(content.site.booking.deposit).toBe("$400");
+    expect(content.site.booking.deposit).toBe("$600");
     expect(content.site.booking.bookingDeadline).toBe("2025-12-25");
     expect(content.site.booking.balanceDue).toBe("2026-01-25");
   });

@@ -18,22 +18,24 @@ const pricingSchema = z.object({
   items: z.array(pricingItemSchema).length(4),
 });
 
-export const siteContentSchema = z.object({
+export const ctaSchema = z.object({
+  label: z.string().min(1),
+  href: z
+    .string()
+    .refine(
+      (value) => value.startsWith("#") || /^https?:\/\//i.test(value),
+      "href must be a hash anchor or an absolute URL",
+    ),
+});
+
+const siteContentSchema = z.object({
   siteName: z.string(),
   hero: z.object({
     title: z.string(),
     location: z.string(),
     datesLine: z.string(),
-    primaryCta: z.object({ label: z.string(), href: z.string() }),
-    secondaryCta: z.object({
-      label: z.string(),
-      href: z
-        .string()
-        .refine(
-          (value) => value.startsWith("#") || /^https?:\/\//i.test(value),
-          "href must be a hash anchor or an absolute URL",
-        ),
-    }),
+    primaryCta: ctaSchema.optional(),
+    secondaryCta: ctaSchema,
   }),
   event: z.object({
     name: z.string(),
