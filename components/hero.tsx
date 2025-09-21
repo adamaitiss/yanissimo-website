@@ -16,21 +16,36 @@ export type HeroProps = {
 };
 
 export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: HeroProps) => {
-  const handleAnchorClick = useCallback((event: React.MouseEvent<HTMLAnchorElement>) => {
-    const anchor = event.currentTarget.getAttribute("href");
-    if (!anchor?.startsWith("#")) return;
-    const targetId = anchor.replace("#", "");
+  const scrollToAnchor = useCallback((href: string) => {
+    const targetId = href.replace("#", "");
     const element = document.getElementById(targetId);
     if (!element) return;
-    event.preventDefault();
     const top = element.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX;
     window.scrollTo({ top, behavior: "smooth" });
-    trackEvent("pricing_cta_click", { source: "hero" });
   }, []);
 
-  const handleBookClick = useCallback(() => {
-    trackEvent("book_cta_click", { source: "hero" });
-  }, []);
+  const handleAnchorClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      const anchor = event.currentTarget.getAttribute("href");
+      if (!anchor?.startsWith("#")) return;
+      event.preventDefault();
+      scrollToAnchor(anchor);
+      trackEvent("pricing_cta_click", { source: "hero" });
+    },
+    [scrollToAnchor],
+  );
+
+  const handleBookClick = useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      trackEvent("book_cta_click", { source: "hero" });
+      if (!secondaryCta.href.startsWith("#")) {
+        return;
+      }
+      event.preventDefault();
+      scrollToAnchor(secondaryCta.href);
+    },
+    [scrollToAnchor, secondaryCta.href],
+  );
 
   return (
     <section
@@ -69,8 +84,8 @@ export const Hero = ({ datesLine, location, primaryCta, secondaryCta, title }: H
           </a>
           <a
             href={secondaryCta.href}
-            target="_blank"
-            rel="noopener noreferrer"
+            target={secondaryCta.href.startsWith("#") ? undefined : "_blank"}
+            rel={secondaryCta.href.startsWith("#") ? undefined : "noopener noreferrer"}
             onClick={handleBookClick}
             className="inline-flex min-w-[180px] items-center justify-center rounded-full border border-white/70 px-8 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-white transition hover:bg-white/10"
           >

@@ -12,14 +12,14 @@ describe("content model", () => {
     expect(content.site.event.startDate).toBe(EVENT_START);
     expect(content.site.event.endDate).toBe(EVENT_END);
     expect(content.site.event.description).toContain(EVENT_DATES_FULL);
-    expect(content.site.hero.secondaryCta.href).toContain("forms.gle");
+    expect(content.site.hero.secondaryCta.href).toBe("#booking-form");
   });
 
   it("provides gallery imagery", () => {
     expect(content.gallery.id).toBe("gallery");
-    expect(content.gallery.images).toHaveLength(20);
+    expect(content.gallery.images).toHaveLength(18);
     expect(content.gallery.images[0]).toEqual(
-      expect.objectContaining({ src: "/gallery/lobby-welcome-lounge.webp", width: 1920, height: 1440 }),
+      expect.objectContaining({ src: "/gallery/arrival-pavilion-sunset.webp", width: 1920, height: 1440 }),
     );
   });
 
@@ -29,9 +29,9 @@ describe("content model", () => {
     expect(content.site.pricing.items).toEqual(
       expect.arrayContaining([
         expect.objectContaining({ label: "Beachside (single)", price: 2690 }),
-        expect.objectContaining({ label: "Beachside (double)", price: 2140 }),
+        expect.objectContaining({ label: "Beachside (double)", price: 2210 }),
         expect.objectContaining({ label: "Beachfront (single)", price: 2890 }),
-        expect.objectContaining({ label: "Beachfront (double)", price: 2290 }),
+        expect.objectContaining({ label: "Beachfront (double)", price: 2350 }),
       ]),
     );
   });

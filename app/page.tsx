@@ -41,6 +41,16 @@ export default function HomePage() {
     EVENT_START_DAY: eventStartDay,
   } as const;
 
+  const bookingCta = {
+    label: site.hero.secondaryCta.label,
+    href: site.hero.secondaryCta.href,
+  } as const;
+
+  const introParagraphs = intro.paragraphs;
+  const overviewCombined = [overview.paragraphs.join("\n\n")];
+  const hotelCombined = [hotel.paragraphs.join("\n\n")];
+  const programCombined = [program.paragraphs.join("\n\n")];
+
   const eventJsonLd = {
     "@context": "https://schema.org",
     "@type": "Event",
@@ -97,8 +107,8 @@ export default function HomePage() {
       <Header
         brand={site.hero.title}
         navItems={site.navigation}
-        bookHref={site.booking.formUrl}
-        bookLabel={site.hero.secondaryCta.label}
+        bookHref={bookingCta.href}
+        bookLabel={bookingCta.label}
       />
       <main id="main" className="flex flex-col">
         <Hero
@@ -106,39 +116,59 @@ export default function HomePage() {
           location={site.hero.location}
           datesLine={EVENT_DATES_SHORT}
           primaryCta={site.hero.primaryCta}
-          secondaryCta={site.hero.secondaryCta}
+          secondaryCta={bookingCta}
         />
         <TextSection
           id={intro.id}
           eyebrow={intro.eyebrow}
-          paragraphs={intro.paragraphs}
+          paragraphs={introParagraphs}
           replacements={replacements}
+          layout="split"
+          sectionClassName="bg-background"
+          containerClassName="mx-auto max-w-5xl px-6 md:px-12"
+          className="items-start gap-12 md:gap-16"
+          eyebrowClassName="text-xs font-medium uppercase tracking-[0.5em] text-accent/70"
+          paragraphClassName="text-lg leading-8 text-foreground/85 md:text-xl md:leading-9"
         />
         <TextSection
           id={overview.id}
           title={overview.title}
-          paragraphs={overview.paragraphs}
+          paragraphs={overviewCombined}
           replacements={replacements}
+          layout="cards"
+          sectionClassName="bg-background"
+          containerClassName="relative mx-auto max-w-5xl px-6 md:px-12"
+          titleClassName="mt-6 text-base font-semibold uppercase tracking-[0.3em] text-accent md:text-lg"
+          paragraphClassName="text-base leading-7 text-foreground/90 md:text-lg md:leading-8"
         />
         <TextSection
           id={hotel.id}
           title={hotel.title}
-          paragraphs={hotel.paragraphs}
+          paragraphs={hotelCombined}
           replacements={replacements}
-          background="muted"
+          layout="cards"
+          sectionClassName="bg-background"
+          containerClassName="relative mx-auto max-w-5xl px-6 md:px-12"
+          titleClassName="mt-6 text-base font-semibold uppercase tracking-[0.3em] text-accent md:text-lg"
+          paragraphClassName="text-base leading-7 text-foreground/82 md:text-lg md:leading-8"
         />
         <TextSection
           id={program.id}
           title={program.title}
-          paragraphs={program.paragraphs}
+          paragraphs={programCombined}
           replacements={replacements}
+          layout="timeline"
+          sectionClassName="relative isolate bg-background before:absolute before:-top-24 before:right-[12%] before:h-[320px] before:w-[320px] before:rounded-full before:bg-[radial-gradient(circle_at_center,rgba(206,198,188,0.22),transparent_74%)] before:content-['']"
+          containerClassName="relative mx-auto max-w-5xl px-6 md:px-12"
+          titleClassName="mt-6 text-base font-semibold uppercase tracking-[0.3em] text-accent md:text-lg"
+          paragraphClassName="text-base leading-7 text-foreground/90 md:text-lg md:leading-8"
         />
         <Rooms section={rooms} />
         <Teacher section={teacher} />
         <PricingSection
           section={pricing}
           pricing={site.pricing}
-          bookCta={{ href: site.booking.formUrl, label: site.hero.secondaryCta.label, external: true }}
+          bookCta={{ href: bookingCta.href, label: bookingCta.label, external: bookingCta.href.startsWith("#") ? false : undefined }}
           replacements={replacements}
         />
         <BookingForm />
@@ -149,7 +179,7 @@ export default function HomePage() {
       </main>
       <Footer />
       <MobileCTABar
-        primary={{ label: site.hero.secondaryCta.label, href: site.booking.formUrl, external: true }}
+        primary={{ label: bookingCta.label, href: bookingCta.href, external: bookingCta.href.startsWith("#") ? false : undefined }}
         secondary={{ label: "Telegram", href: site.contact.telegram, external: true }}
       />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(eventJsonLd) }} />

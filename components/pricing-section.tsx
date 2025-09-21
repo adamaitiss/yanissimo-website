@@ -4,7 +4,7 @@ import { RichText } from "@/components/rich-text";
 import { PricingViewTracker } from "@/components/pricing-view-tracker";
 import { Button } from "@/components/ui/button";
 import type { PricingSection as PricingSectionContent, SiteContent } from "@/lib/content";
-import { SECTION_IDS } from "@/lib/constants";
+import { SECTION_IDS, SCROLL_OFFSET_PX } from "@/lib/constants";
 import { trackEvent } from "@/lib/analytics";
 import type { PlaceholderMap } from "@/lib/text";
 
@@ -31,7 +31,16 @@ export const PricingSection = ({ bookCta, pricing, section, replacements }: Pric
     external: false,
   };
 
-  const isExternalLink = resolvedBookCta.external ?? /^https?:/i.test(resolvedBookCta.href);
+  const isAnchorLink = resolvedBookCta.href.startsWith("#");
+  const isExternalLink = resolvedBookCta.external ?? (!isAnchorLink && /^https?:/i.test(resolvedBookCta.href));
+
+  const handleAnchorScroll = () => {
+    if (!isAnchorLink) return;
+    const target = document.getElementById(resolvedBookCta.href.slice(1));
+    if (!target) return;
+    const top = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX;
+    window.scrollTo({ top, behavior: "smooth" });
+  };
 
   return (
     <section
@@ -93,7 +102,13 @@ export const PricingSection = ({ bookCta, pricing, section, replacements }: Pric
                     href={resolvedBookCta.href}
                     target={isExternalLink ? "_blank" : undefined}
                     rel={isExternalLink ? "noopener noreferrer" : undefined}
-                    onClick={() => trackEvent("pricing_cta_click", { source: "pricing-section" })}
+                    onClick={(event) => {
+                      trackEvent("pricing_cta_click", { source: "pricing-section" });
+                      if (isAnchorLink) {
+                        event.preventDefault();
+                        handleAnchorScroll();
+                      }
+                    }}
                   >
                     {resolvedBookCta.label}
                   </a>

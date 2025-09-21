@@ -55,6 +55,25 @@ export const Header = ({ brand, navItems, bookHref, bookLabel }: HeaderProps) =>
     [scrollToSection],
   );
 
+  const isBookAnchor = bookHref.startsWith("#");
+  const isBookExternal = /^https?:/i.test(bookHref);
+
+  const createBookClickHandler = useCallback(
+    (source: "header" | "header-mobile") => {
+      return (event: React.MouseEvent<HTMLAnchorElement>) => {
+        trackEvent("book_cta_click", { source });
+        if (!isBookAnchor) {
+          return;
+        }
+        event.preventDefault();
+        setMenuOpen(false);
+        const targetId = bookHref.slice(1);
+        scrollToSection(targetId);
+      };
+    },
+    [bookHref, isBookAnchor, scrollToSection],
+  );
+
   return (
     <header
       className={cn(
@@ -93,9 +112,9 @@ export const Header = ({ brand, navItems, bookHref, bookLabel }: HeaderProps) =>
           <Button asChild size="sm" className="hidden md:inline-flex">
             <a
               href={bookHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={() => trackEvent("book_cta_click", { source: "header" })}
+              target={isBookExternal ? "_blank" : undefined}
+              rel={isBookExternal ? "noopener noreferrer" : undefined}
+              onClick={createBookClickHandler("header")}
             >
               {bookLabel}
             </a>
@@ -137,9 +156,9 @@ export const Header = ({ brand, navItems, bookHref, bookLabel }: HeaderProps) =>
             <Button asChild size="lg" className="w-full">
               <a
                 href={bookHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={() => trackEvent("book_cta_click", { source: "header-mobile" })}
+                target={isBookExternal ? "_blank" : undefined}
+                rel={isBookExternal ? "noopener noreferrer" : undefined}
+                onClick={createBookClickHandler("header-mobile")}
               >
                 {bookLabel}
               </a>

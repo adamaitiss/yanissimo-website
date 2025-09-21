@@ -26,7 +26,7 @@ export const BookingSteps = ({ replacements, section }: BookingStepsProps) => {
                 {index + 1}
               </span>
               <div className="space-y-2 text-sm text-muted-foreground md:text-base">
-                <p className="text-base font-semibold uppercase tracking-[0.2em] text-foreground md:text-lg">
+                <p className="text-base font-medium tracking-[0.08em] text-foreground md:text-lg">
                   {step.title}
                 </p>
                 <RichText text={step.description} replacements={replacements} />

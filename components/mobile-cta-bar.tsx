@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 
 import { trackEvent } from "@/lib/analytics";
+import { SCROLL_OFFSET_PX } from "@/lib/constants";
 import { Button } from "@/components/ui/button";
 
 type CTAConfig = {
@@ -28,8 +29,16 @@ export const MobileCTABar = ({ primary, secondary }: MobileCTABarProps) => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const isPrimaryAnchor = primary.href.startsWith("#");
   const primaryProps = primary.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
   const secondaryProps = secondary.external ? { target: "_blank", rel: "noopener noreferrer" } : {};
+
+  const handleAnchorScroll = (href: string) => {
+    const target = document.getElementById(href.slice(1));
+    if (!target) return;
+    const offset = target.getBoundingClientRect().top + window.scrollY - SCROLL_OFFSET_PX;
+    window.scrollTo({ top: offset, behavior: "smooth" });
+  };
 
   return (
     <div
@@ -42,7 +51,13 @@ export const MobileCTABar = ({ primary, secondary }: MobileCTABarProps) => {
         <Button asChild className="flex-1" size="lg">
           <a
             href={primary.href}
-            onClick={() => trackEvent("book_cta_click", { source: "mobile-bar" })}
+            onClick={(event) => {
+              trackEvent("book_cta_click", { source: "mobile-bar" });
+              if (isPrimaryAnchor) {
+                event.preventDefault();
+                handleAnchorScroll(primary.href);
+              }
+            }}
             {...primaryProps}
           >
             {primary.label}

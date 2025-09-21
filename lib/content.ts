@@ -25,7 +25,15 @@ export const siteContentSchema = z.object({
     location: z.string(),
     datesLine: z.string(),
     primaryCta: z.object({ label: z.string(), href: z.string() }),
-    secondaryCta: z.object({ label: z.string(), href: z.string().url() }),
+    secondaryCta: z.object({
+      label: z.string(),
+      href: z
+        .string()
+        .refine(
+          (value) => value.startsWith("#") || /^https?:\/\//i.test(value),
+          "href must be a hash anchor or an absolute URL",
+        ),
+    }),
   }),
   event: z.object({
     name: z.string(),

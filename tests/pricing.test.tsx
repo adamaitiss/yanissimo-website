@@ -23,7 +23,7 @@ describe("PricingSection", () => {
       expect(screen.getByText(pattern)).toBeInTheDocument();
     });
 
-    ["$2,690", "$2,140", "$2,890", "$2,290"].forEach((amount) => {
+    ["$2,690", "$2,210", "$2,890", "$2,350"].forEach((amount) => {
       expect(screen.getByText(amount)).toBeInTheDocument();
     });
   });

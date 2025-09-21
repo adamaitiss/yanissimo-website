@@ -4,9 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/prebuild-clean.mjs && npm run img:opt && next build",
+    "build": "node scripts/prebuild-clean.mjs && next build",
     "start": "next start",
-    "img:opt": "node scripts/optimize-images.mjs",
     "lint": "npm run lint:content && eslint",
     "lint:content": "node scripts/check-content.mjs",
     "test": "vitest run",

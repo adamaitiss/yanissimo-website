@@ -26,7 +26,7 @@ export const BookingForm = () => {
       if (!submittedFlagRef.current) return;
       submittedFlagRef.current = false;
       setIsSubmitting(false);
-      setStatus({ message: "Спасибо! Заявка отправлена.", tone: "success" });
+      setStatus({ message: "Заявка отправлена, скоро я свяжусь с вами.", tone: "success" });
       formRef.current?.reset();
     };
 
@@ -54,17 +54,19 @@ export const BookingForm = () => {
     <section
       id={SECTION_IDS.bookingForm}
       aria-labelledby="booking-form-heading"
-      className="bg-muted py-20"
+      className="bg-background py-24"
     >
-      <div className="mx-auto max-w-3xl px-6 md:px-10">
-        <div className="space-y-4">
-          <h2 id="booking-form-heading" className="text-3xl font-semibold text-foreground md:text-4xl">
-            Забронировать участие
-          </h2>
-          <p className="text-base text-muted-foreground md:text-lg">
-            Оставьте заявку — мы подтвердим детали и вернёмся к вам в течение двух дней.
-          </p>
-        </div>
+      <div className="mx-auto max-w-4xl px-6 md:px-10">
+        <div className="rounded-[2.75rem] border border-border/50 bg-muted/15 p-8 shadow-[0_30px_80px_-45px_rgba(15,23,42,0.45)] backdrop-blur-sm md:p-12">
+          <div className="space-y-4 text-center md:text-left">
+            <p className="text-xs font-medium uppercase tracking-[0.28em] text-accent/75">Бронирование</p>
+            <h2 id="booking-form-heading" className="text-3xl font-semibold text-foreground md:text-4xl">
+              Забронировать участие
+            </h2>
+            <p className="text-base text-muted-foreground md:text-lg">
+              Оставьте заявку — я подтверджу детали и вернусь к вам в течение суток.
+            </p>
+          </div>
         <iframe
           ref={iframeRef}
           name="booking_iframe"
@@ -78,37 +80,37 @@ export const BookingForm = () => {
           method="POST"
           target="booking_iframe"
           acceptCharset="utf-8"
-          className="mt-10 space-y-6 rounded-3xl border border-border bg-background p-6 shadow-sm md:p-10"
+          className="mt-10 grid gap-6 rounded-[2rem] border border-border/60 bg-background/95 p-6 shadow-[0_20px_60px_-40px_rgba(15,23,42,0.45)] md:mt-12 md:gap-8 md:p-10"
           onSubmit={handleBeforeSubmit}
         >
-          <label className="block space-y-2 text-sm font-medium text-muted-foreground">
+          <label className="block space-y-2 text-sm font-medium text-foreground/80">
             <span>Имя</span>
             <input
               type="text"
               name="name"
               required
               placeholder="Ваше имя"
-              className="w-full rounded-xl border border-border bg-white px-4 py-3 text-base text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
+              className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-base font-light text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30 placeholder:text-foreground/40"
             />
           </label>
-          <label className="block space-y-2 text-sm font-medium text-muted-foreground">
+          <label className="block space-y-2 text-sm font-medium text-foreground/80">
             <span>Телефон или ник в Telegram</span>
             <input
               type="text"
               name="contact"
               required
               placeholder="+7… или @username"
-              className="w-full rounded-xl border border-border bg-white px-4 py-3 text-base text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
+              className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-base font-light text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30 placeholder:text-foreground/40"
             />
           </label>
           <div className="grid gap-6 md:grid-cols-2">
-            <label className="block space-y-2 text-sm font-medium text-muted-foreground">
+            <label className="block space-y-2 text-sm font-medium text-foreground/80">
               <span>Номер</span>
               <select
                 name="room"
                 required
                 defaultValue=""
-                className="w-full rounded-xl border border-border bg-white px-4 py-3 text-base text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
+                className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-base font-light text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               >
                 <option value="" disabled>
                   Выберите
@@ -117,13 +119,13 @@ export const BookingForm = () => {
                 <option value="Beachside">Beachside</option>
               </select>
             </label>
-            <label className="block space-y-2 text-sm font-medium text-muted-foreground">
+            <label className="block space-y-2 text-sm font-medium text-foreground/80">
               <span>Проживание</span>
               <select
                 name="occupancy"
                 required
                 defaultValue=""
-                className="w-full rounded-xl border border-border bg-white px-4 py-3 text-base text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
+                className="w-full rounded-2xl border border-border/60 bg-background/80 px-4 py-3 text-base font-light text-foreground shadow-sm outline-none transition focus:border-accent focus:ring-2 focus:ring-accent/30"
               >
                 <option value="" disabled>
                   Выберите
@@ -138,7 +140,7 @@ export const BookingForm = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="inline-flex w-full items-center justify-center rounded-xl bg-foreground px-6 py-3 text-base font-semibold uppercase tracking-[0.2em] text-background transition hover:bg-foreground/90 disabled:cursor-not-allowed disabled:bg-foreground/60"
+            className="inline-flex w-full items-center justify-center rounded-full bg-foreground px-6 py-3 text-base font-medium tracking-[0.08em] text-background transition hover:bg-foreground/90 disabled:cursor-not-allowed disabled:bg-foreground/60"
           >
             {isSubmitting ? "Отправка…" : "Отправить"}
           </button>
@@ -150,6 +152,7 @@ export const BookingForm = () => {
             </p>
           ) : null}
         </form>
+        </div>
       </div>
     </section>
   );

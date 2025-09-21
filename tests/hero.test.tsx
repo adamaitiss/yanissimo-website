@@ -10,7 +10,7 @@ const props = {
   location: "Мальдивы",
   datesLine: EVENT_DATES_SHORT,
   primaryCta: { label: "СТОИМОСТЬ", href: "#pricing" },
-  secondaryCta: { label: "ЗАБРОНИРОВАТЬ", href: "https://forms.gle/CQEx2U2KduZYjZ5SA" },
+  secondaryCta: { label: "ЗАБРОНИРОВАТЬ", href: "#booking-form" },
 };
 
 describe("Hero", () => {
@@ -19,9 +19,6 @@ describe("Hero", () => {
     expect(screen.getByRole("heading", { level: 1, name: /YOGA \+ OCEAN/i })).toBeInTheDocument();
     expect(screen.getByText(EVENT_DATES_SHORT)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "СТОИМОСТЬ" })).toHaveAttribute("href", "#pricing");
-    expect(screen.getByRole("link", { name: "ЗАБРОНИРОВАТЬ" })).toHaveAttribute(
-      "href",
-      "https://forms.gle/CQEx2U2KduZYjZ5SA",
-    );
+    expect(screen.getByRole("link", { name: "ЗАБРОНИРОВАТЬ" })).toHaveAttribute("href", "#booking-form");
   });
 });
