@@ -154,7 +154,7 @@ export const LightboxGallery = ({
           <button
             type="button"
             onClick={handleClose}
-            className="absolute right-6 top-6 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="absolute right-6 top-6 z-10 flex h-10 w-10 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             aria-label="Закрыть галерею"
           >
             <X className="h-5 w-5" aria-hidden="true" />
@@ -164,7 +164,7 @@ export const LightboxGallery = ({
               <button
                 type="button"
                 onClick={handlePrev}
-                className="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="absolute left-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 aria-label="Предыдущее фото"
               >
                 <ChevronLeft className="h-6 w-6" aria-hidden="true" />
@@ -172,12 +172,12 @@ export const LightboxGallery = ({
               <button
                 type="button"
                 onClick={handleNext}
-                className="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                className="absolute right-4 top-1/2 z-10 flex h-12 w-12 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
                 aria-label="Следующее фото"
               >
                 <ChevronRight className="h-6 w-6" aria-hidden="true" />
               </button>
-              <span className="absolute bottom-6 left-1/2 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs font-medium uppercase tracking-[0.3em] text-white">
+              <span className="absolute bottom-6 left-1/2 z-10 -translate-x-1/2 rounded-full bg-black/60 px-3 py-1 text-xs font-medium uppercase tracking-[0.3em] text-white">
                 {activeIndex + 1}/{totalSlides}
               </span>
             </>

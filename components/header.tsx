@@ -132,12 +132,15 @@ export const Header = ({ brand, navItems, bookHref, bookLabel }: HeaderProps) =>
         </div>
       </div>
       {menuOpen ? (
-        <div className="fixed inset-0 z-40 bg-black/40 md:hidden" onClick={() => setMenuOpen(false)}>
+        <div
+          className="fixed inset-0 z-40 bg-background/95 backdrop-blur supports-[backdrop-filter]:backdrop-blur md:hidden"
+          onClick={() => setMenuOpen(false)}
+        >
           <div
             id="mobile-nav"
             role="dialog"
             aria-modal="true"
-            className="ml-auto flex h-full w-72 flex-col justify-between bg-background px-6 py-10 shadow-xl"
+            className="ml-auto flex h-full w-full max-w-sm flex-col justify-between bg-background px-6 py-10 shadow-xl"
             onClick={(event) => event.stopPropagation()}
           >
             <nav className="space-y-4 text-lg text-foreground">
