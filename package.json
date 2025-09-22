@@ -11,7 +11,7 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d out --dotfiles --cname maldives.yanissimoyoga.ru"
+    "deploy": "node scripts/write-cname.mjs && gh-pages -d out --dotfiles"
   },
   "dependencies": {
     "@radix-ui/react-separator": "^1.1.7",
